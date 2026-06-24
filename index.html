@@ -41,30 +41,16 @@
 
         .container { max-width: 1400px; margin: 0 auto; }
 
-        /* HEADER & LOGO STYLE */
         header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             margin-bottom: 12px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-        }
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px; /* គម្លាតរវាង Logo និង អក្សរ */
-        }
-        .app-logo {
-            width: 42px;         /* ទំហំទទឹង Logo */
-            height: 42px;        /* ទំហំកម្ពស់ Logo */
-            object-fit: cover;
-            border-radius: 8px;  /* ធ្វើឱ្យជ្រុង Logo មូលបន្តិចមើលទៅស្អាត */
-            border: 1px solid var(--border);
-            background-color: var(--panel-card);
+            padding-bottom: 6px;
         }
         header h1 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text-main); letter-spacing: -0.5px; }
-        header p { font-size: 0.68rem; color: var(--text-muted); margin: 1px 0 0 0; }
+        header p { font-size: 0.80rem; color: var(--text-muted); margin: 1px 0 0 0; }
 
         .control-panel {
             background-color: var(--panel-bg); 
@@ -244,14 +230,39 @@
             display: flex; align-items: center; justify-content: center; color: var(--text-main); z-index: 20;
         }
 
-        .modal-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .modal-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; position: relative; }
         
-        .toggle-lines-btn {
-            background: var(--panel-card); border: 1px solid var(--border); color: var(--text-muted);
-            font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer;
-            display: flex; align-items: center; gap: 5px;
+        /* របារ Toggle រចនាថ្មីចំកណ្តាល */
+        .toggle-center-zone {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: var(--panel-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2px;
+            gap: 2px;
         }
-        .toggle-lines-btn.active { color: var(--accent); background: var(--accent-glow); border-color: var(--accent); }
+        .btn-toggle-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 34px;
+            height: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .btn-toggle-icon.active {
+            color: var(--accent);
+            background: var(--accent-glow);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
 
         .modal-svg-container {
             width: 100%; height: 380px; margin: 10px 0; background: var(--svg-bg); border-radius: 12px; border: 1px solid var(--border);
@@ -266,12 +277,35 @@
         }
         .zoom-label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
 
+        /* ប៊ូតុង Center & Fit រចនាថ្មី */
+        .btn-center-fit {
+            background: var(--accent-glow);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            cursor: pointer;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            transition: all 0.2s;
+        }
+        .btn-center-fit:hover {
+            background: var(--accent);
+            color: var(--bg-main);
+        }
+
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
             background: var(--panel-card); color: var(--text-main); border: 1px solid var(--border);
             width: 36px; height: 36px; border-radius: 50%; font-size: 0.8rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center; z-index: 10;
+            transition: all 0.2s;
         }
+        .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
         .prev-btn { left: -45px; }
         .next-btn { right: -45px; }
 
@@ -281,9 +315,13 @@
         .hud-item strong { font-size: 0.8rem; color: var(--text-main); }
 
         .modal-bottom-header { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; gap: 10px; }
-        .modal-meta-left { flex-grow: 1; }
+        .modal-meta-left { min-width: 120px; }
         .modal-meta-left h3 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main); }
         
+        .modal-review-input-wrapper { flex-grow: 1; position: relative; display: flex; align-items: center; }
+        .modal-review-input { width: 100%; height: 38px; background-color: var(--svg-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: all 0.2s; }
+        .modal-review-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+
         .action-buttons-group { display: flex; align-items: center; gap: 6px; }
         .btn-action-icon {
             background: var(--panel-card); color: var(--text-muted); border: 1px solid var(--border);
@@ -300,6 +338,9 @@
             .control-panel { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
             .panel-left-zone, .panel-right-zone { justify-content: space-between; width: 100%; }
             .font-selector-compact { max-width: 100%; flex-grow: 1; }
+            .modal-bottom-header { flex-direction: column; align-items: stretch; gap: 10px; }
+            .toggle-center-zone { position: static; transform: none; }
+            .modal-top-bar { flex-direction: column; gap: 6px; align-items: center; }
         }
 
         @media (max-width: 1024px) {
@@ -312,7 +353,6 @@
         @media (max-width: 600px) {
             .meta-grid { flex-direction: column; align-items: flex-start; gap: 6px; }
             .metrics-hud-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
-            .modal-bottom-header { flex-direction: column; align-items: flex-start; }
             .action-buttons-group { width: 100%; justify-content: flex-end; }
         }
     </style>
@@ -321,12 +361,9 @@
 
 <div class="container">
     <header>
-        <div class="brand-container">
-            <img src="https://i.postimg.cc/MHz1Gncw/IMG-3178.png" alt="Logo" class="app-logo">
-            <div>
-                <h1>KHMER GLYPH INSPECTOR</h1>
-                <p>កម្មវិធីពិនិត្យមើលពុម្ពអក្សរ</p>
-            </div>
+        <div>
+            <h1>KHMER GLYPH INSPECTOR</h1>
+            <p>កម្មវិធីពិនិត្យមើលពុម្ពអក្សរ</p>
         </div>
     </header>
 
@@ -337,7 +374,7 @@
                     <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zm0-10h4v6h6v-6h4l-7-7-7 7z"/></svg>
                     Upload
                 </label>
-                <input type="file" id="font-file" accept=".ttf,.otf" multiple style="display: none;">
+                <input type="file" id="font-file" accept=".ttf,.otf" style="display: none;">
             </div>
             <div class="control-item-wrapper" id="font-selector-group" style="display: none;">
                 <select id="font-history-select" class="font-selector-compact"></select>
@@ -375,10 +412,12 @@
 
         <div class="modal-top-bar" data-html2canvas-ignore="true">
             <div style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;" id="modal-index">GLYPH INDEX: #0</div>
-            <button class="toggle-lines-btn active" id="toggle-lines-btn">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                <span id="toggle-status-text">Show Vector Lines</span>
-            </button>
+            
+            <div class="toggle-center-zone">
+                <button class="btn-toggle-icon active" id="toggle-h-lines" title="បិទ/បើក បន្ទាត់ផ្តេក (Asc, Cap, Base, Desc)">☰</button>
+                <button class="btn-toggle-icon active" id="toggle-v-lines" title="បិទ/បើក បន្ទាត់បញ្ឈរ (LSB, RSB)">‖</button>
+            </div>
+            <div style="width: 50px; min-height: 1px;"></div>
         </div>
         
         <div class="modal-svg-container" id="modal-svg-holder"></div>
@@ -387,7 +426,9 @@
             <span class="zoom-label">🔍 Zoom</span>
             <input type="range" id="popup-zoom-slider" class="font-slider-compact" style="flex-grow:1;" min="0.3" max="5.0" step="0.02" value="1.0">
             <span id="popup-zoom-value" class="size-indicator-compact" style="min-width: 45px;">100%</span>
-            <button id="reset-zoom-btn" style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 6px; font-size: 0.62rem; padding: 2px 6px; cursor: pointer; color: var(--text-main);">Reset</button>
+            <button id="reset-zoom-btn" style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 6px; font-size: 0.62rem; padding: 2px 6px; cursor: pointer; color: var(--text-main); margin-right: 4px;">Reset</button>
+            
+            <button id="center-fit-btn" class="btn-center-fit" title="ពង្រីកតួអក្សរចំកណ្តាលស្វ័យប្រវត្តិ">🎯 Fit Center</button>
         </div>
         
         <div class="metrics-hud-grid">
@@ -402,6 +443,10 @@
             <div class="modal-meta-left">
                 <h3 id="modal-name">Name</h3>
                 <div style="font-size: 0.72rem; color: var(--accent); margin-top: 2px;" id="modal-unicode">Unicode: U+0000</div>
+            </div>
+            
+            <div class="modal-review-input-wrapper">
+                <input type="text" id="modal-review-text-field" class="modal-review-input" placeholder="វាយអត្ថបទសាកល្បងផ្គុំពាក្យខ្មែរ (ឧ. ខ្ញុំ, កម្ពុជា, ផ្ញើជើង)...">
             </div>
             
             <div class="action-buttons-group">
@@ -434,10 +479,13 @@
     const modalIndex = document.getElementById('modal-index');
     const modalName = document.getElementById('modal-name');
     const modalUnicode = document.getElementById('modal-unicode');
+    const modalReviewTextField = document.getElementById('modal-review-text-field');
+    
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
-    const toggleLinesBtn = document.getElementById('toggle-lines-btn');
-    const toggleStatusText = document.getElementById('toggle-status-text');
+    const toggleHLines = document.getElementById('toggle-h-lines');
+    const toggleVLines = document.getElementById('toggle-v-lines');
+    const centerFitBtn = document.getElementById('center-fit-btn');
 
     const popupZoomSlider = document.getElementById('popup-zoom-slider');
     const popupZoomValue = document.getElementById('popup-zoom-value');
@@ -450,12 +498,13 @@
     const hudDesc = document.getElementById('hud-desc');
     const hudWidth = document.getElementById('hud-width');
 
-    let fontStorage = []; 
     let currentFont = null;
     let glyphScale = 65;
     let selectedGlyphIndex = 0;
     let chosenGlyphColor = "#dcac57"; 
-    let showVectorLines = true; 
+    
+    let showHLines = true;
+    let showVLines = true;
     
     let baseZoomLevel = 1.0;
     let panX = 0; let panY = 0;
@@ -464,25 +513,47 @@
 
     const baseW = 860;
     const baseH = 420;
+    const fontUniqueId = "LiveUploadedKhmerFont";
+
+    const fontDynamicStyle = document.createElement('style');
+    document.head.appendChild(fontDynamicStyle);
 
     document.addEventListener('keydown', function(e) {
         if (!glyphModal.classList.contains('active')) return;
         if (e.key === 'ArrowLeft') {
-            if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex); }
+            navigateGlyph(-1);
         } else if (e.key === 'ArrowRight') {
-            if (selectedGlyphIndex < currentFont.numGlyphs - 1) { selectedGlyphIndex++; openGlyphModal(selectedGlyphIndex); }
+            navigateGlyph(1);
         } else if (e.key === 'Escape') { closeModal(); }
     });
 
-    toggleLinesBtn.addEventListener('click', function() {
-        showVectorLines = !showVectorLines;
-        if (showVectorLines) {
-            toggleLinesBtn.classList.add('active');
-            toggleStatusText.innerText = "Show Vector Lines";
-        } else {
-            toggleLinesBtn.classList.remove('active');
-            toggleStatusText.innerText = "Hide Vector Lines";
+    function navigateGlyph(direction) {
+        if (!currentFont) return;
+        let targetIndex = selectedGlyphIndex + direction;
+        if (targetIndex >= 0 && targetIndex < currentFont.numGlyphs) {
+            selectedGlyphIndex = targetIndex;
+            const glyphs = currentFont.glyphs.glyphs;
+            const glyph = glyphs[selectedGlyphIndex];
+            modalReviewTextField.value = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
+            
+            // រក្សាកម្រិត Zoom ចាស់ ឬ Reset ទៅតាមការចង់បាន
+            updateModalContent();
         }
+    }
+
+    modalReviewTextField.addEventListener('input', function() {
+        if (currentFont) updateModalContent();
+    });
+
+    toggleHLines.addEventListener('click', function() {
+        showHLines = !showHLines;
+        toggleHLines.classList.toggle('active', showHLines);
+        if (currentFont) updateModalContent();
+    });
+
+    toggleVLines.addEventListener('click', function() {
+        showVLines = !showVLines;
+        toggleVLines.classList.toggle('active', showVLines);
         if (currentFont) updateModalContent();
     });
 
@@ -502,58 +573,47 @@
     });
 
     fontFileInput.addEventListener('change', function(e) {
-        const files = e.target.files;
-        if (!files || files.length === 0) return;
+        const file = e.target.files[0];
+        if (!file) return;
         
         loadingText.style.display = 'block';
-        let loadedCount = 0;
-        let lastParsedFont = null;
-        let lastFileName = "";
-        fontHistorySelect.innerHTML = ''; 
-        fontStorage = [];
+        fontMetaBlock.style.display = 'none';
+        glyphContainer.innerHTML = '';
 
-        Array.from(files).forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const parsedFont = opentype.parse(event.target.result);
-                    const fontIndex = fontStorage.length;
-                    fontStorage.push({ name: file.name, font: parsedFont });
-                    
-                    const option = document.createElement('option');
-                    option.value = fontIndex; option.text = file.name;
-                    fontHistorySelect.appendChild(option);
-                    
-                    lastParsedFont = parsedFont;
-                    lastFileName = file.name;
-                } catch (err) { console.error(err); }
-
-                loadedCount++;
-                if (loadedCount === files.length) {
-                    if (lastParsedFont) {
-                        fontHistorySelect.value = fontStorage.length - 1; 
-                        fontSelectorGroup.style.display = 'flex';
-                        switchFont(lastParsedFont, lastFileName);
-                    } else { loadingText.style.display = 'none'; }
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const arrayBuffer = event.target.result;
+                const dataView = new Uint8Array(arrayBuffer);
+                currentFont = opentype.parse(dataView.buffer);
+                
+                let binary = '';
+                const len = dataView.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(dataView[i]);
                 }
-            };
-            reader.readAsArrayBuffer(file);
-        });
+                const base64FontData = btoa(binary);
+                
+                fontDynamicStyle.textContent = `
+                    @font-face {
+                        font-family: '${fontUniqueId}';
+                        src: url('data:font/opentype;base64,${base64FontData}');
+                    }
+                `;
+                
+                fontHistorySelect.innerHTML = `<option value="0">${file.name}</option>`;
+                fontSelectorGroup.style.display = 'flex';
+                
+                displayFontMeta(file.name, currentFont);
+                renderGlyphsSVG(currentFont);
+            } catch (err) { 
+                console.error("ការអានពុម្ពអក្សរមានបញ្ហា៖", err);
+                alert("មិនអាចអានឯកសារពុម្ពអក្សរនេះបានទេ! សូមពិនិត្យមើលប្រភេទឯកសារ (.ttf ឬ .otf) ឡើងវិញ។");
+                loadingText.style.display = 'none';
+            }
+        };
+        reader.readAsArrayBuffer(file);
     });
-
-    fontHistorySelect.addEventListener('change', function(e) {
-        const idx = parseInt(e.target.value);
-        if (fontStorage[idx]) {
-            loadingText.style.display = 'block';
-            setTimeout(() => { switchFont(fontStorage[idx].font, fontStorage[idx].name); }, 50);
-        }
-    });
-
-    function switchFont(font, name) {
-        currentFont = font;
-        displayFontMeta(name, font);
-        renderGlyphsSVG(font);
-    }
 
     function displayFontMeta(fileName, font) {
         const names = font.names;
@@ -579,7 +639,12 @@
             const glyph = glyphs[i];
             const box = document.createElement('div');
             box.className = 'glyph-box';
-            box.addEventListener('click', () => openGlyphModal(i));
+            box.addEventListener('click', () => {
+                selectedGlyphIndex = i;
+                const char = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
+                modalReviewTextField.value = char;
+                openGlyphModal(i);
+            });
 
             let unicodeStr = glyph.unicode !== undefined ? 'U+' + glyph.unicode.toString(16).toUpperCase().padStart(4, '0') : 'None';
             const svgWrapper = document.createElement('div');
@@ -654,11 +719,11 @@
         hudWidth.innerText = Math.round(advanceWidth);
 
         const totalFontHeight = ascender - descender; 
-        const targetRenderHeight = 240;               
+        const targetRenderHeight = 220;               
         const mScale = (targetRenderHeight / totalFontHeight) * uM; 
         const fScale = mScale / uM; 
 
-        const baselineY = 100 + (ascender * fScale); 
+        const baselineY = 110 + (ascender * fScale); 
         const ascenderY = baselineY - (ascender * fScale);
         const capHeightY = baselineY - (capHeight * fScale);
         const descenderY = baselineY - (descender * fScale);
@@ -677,6 +742,7 @@
             .bg-rect { fill: #070a10; }
             .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: #a855f7; }
             .metric-lbl-txt { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: #ffffff; }
+            .khmer-perfect-text { font-family: '${fontUniqueId}', sans-serif !important; font-size: 115px; fill: ${chosenGlyphColor}; text-anchor: middle; }
         `;
         svgElement.appendChild(styleElement);
 
@@ -725,24 +791,27 @@
             return g;
         }
 
-        if (showVectorLines) {
+        if (showHLines) {
             svgElement.appendChild(createHMetricRow(ascenderY, "ASC", ascender, "#f43f5e", "#f43f5e"));  
             svgElement.appendChild(createHMetricRow(capHeightY, "CAP", Math.round(capHeight), "#f59e0b", "#f59e0b")); 
             svgElement.appendChild(createHMetricRow(baselineY, "BASE", 0, "#10b981", "#10b981"));  
             svgElement.appendChild(createHMetricRow(descenderY, "DESC", descender, "#3b82f6", "#3b82f6")); 
+        }
 
+        if (showVLines) {
             svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.6)"));
             svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.8)"));
         }
 
-        const pathData = glyph.getPath(dx, baselineY, mScale).toPathData(3);
-        if (pathData && glyph.path && glyph.path.commands && glyph.path.commands.length > 0) {
-            const pathElement = document.createElementNS(svgNS, "path");
-            pathElement.setAttribute("d", pathData);
-            pathElement.setAttribute("fill", chosenGlyphColor);
-            svgElement.appendChild(pathElement);
-        }
+        const currentLiveText = modalReviewTextField.value || (glyph.unicode ? String.fromCharCode(glyph.unicode) : ' ');
 
+        const nativeTextNode = document.createElementNS(svgNS, "text");
+        nativeTextNode.setAttribute("x", "50%");
+        nativeTextNode.setAttribute("y", baselineY);
+        nativeTextNode.className.baseVal = "khmer-perfect-text";
+        nativeTextNode.textContent = currentLiveText;
+
+        svgElement.appendChild(nativeTextNode);
         modalSvgHolder.appendChild(svgElement);
         setupZoomAndPanControl();
     }
@@ -797,6 +866,41 @@
             popupZoomSlider.value = 1.0; popupZoomValue.innerText = "100%";
             updateViewBox();
         };
+
+        // 🎯 មុខងារ Center & Fit (គណនាពង្រីកចំកណ្តាលស្វ័យប្រវត្តិ)
+        centerFitBtn.onclick = function() {
+            if (!currentFont) return;
+            const glyph = currentFont.glyphs.glyphs[selectedGlyphIndex];
+            
+            // ទាញយកទំហំស៊ុមប្រអប់ពិតប្រាកដរបស់តួអក្សរ
+            let xMin = 0, xMax = glyph.advanceWidth || 1000;
+            if (glyph.getBoundingBox) {
+                const box = glyph.getBoundingBox();
+                if (box.xMin !== undefined) { xMin = box.xMin; xMax = box.xMax; }
+            }
+            
+            const uM = currentFont.unitsPerEm;
+            const targetRenderHeight = 220;
+            const totalFontHeight = currentFont.ascender - currentFont.descender;
+            const fScale = (targetRenderHeight / totalFontHeight);
+            
+            const glyphRenderWidth = (xMax - xMin) * fScale;
+            
+            // គណនាកម្រិត Zoom ឱ្យសមស្របតាមទំហំតួអក្សរនីមួយៗ
+            let calculatedZoom = 1.2;
+            if (glyphRenderWidth > 0) {
+                calculatedZoom = Math.min(3.5, Math.max(1.0, (baseW * 0.45) / glyphRenderWidth));
+            }
+            
+            baseZoomLevel = calculatedZoom;
+            panX = 0; 
+            panY = 0; 
+            
+            popupZoomSlider.value = baseZoomLevel.toFixed(2);
+            popupZoomValue.innerText = Math.round(baseZoomLevel * 100) + "%";
+            updateViewBox();
+        };
+
         updateViewBox();
     }
 
@@ -842,8 +946,8 @@
         }).catch(err => console.error(err));
     });
 
-    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex); } });
-    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex < currentFont.numGlyphs - 1) { selectedGlyphIndex++; openGlyphModal(selectedGlyphIndex); } });
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateGlyph(-1); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigateGlyph(1); });
     closeModalBtn.addEventListener('click', closeModal);
     glyphModal.addEventListener('click', (e) => { if (e.target === glyphModal) closeModal(); });
 </script>
