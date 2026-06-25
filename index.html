@@ -912,14 +912,49 @@
         const captureArea = document.getElementById('capture-area');
         if (!captureArea) return;
 
+        fullCardScreenshotBtn.style.opacity = "0.5";
+
+        // វាស់វែងកម្ពស់ពិតប្រាកដរបស់ Element ទាំងមូលដើម្បីកុំឱ្យដាច់ប្រអប់
+        const originalHeight = captureArea.scrollHeight;
+        const originalWidth = captureArea.scrollWidth;
+
         html2canvas(captureArea, {
-            backgroundColor: '#131926', scale: 2, logging: false, useCORS: true
+            backgroundColor: '#131926', 
+            scale: 2, 
+            logging: false, 
+            useCORS: true,
+            allowTaint: true,
+            width: originalWidth,
+            height: originalHeight,
+            onclone: function(clonedDoc) {
+                // ១. បង្ខំឱ្យចម្លងស្ទីល Font ចូលទៅក្នុងប្រព័ន្ធចម្លងរបស់ html2canvas
+                const dynamicStyle = document.getElementById('dynamic-font-face');
+                if (dynamicStyle) {
+                    const styleClone = dynamicStyle.cloneNode(true);
+                    clonedDoc.head.appendChild(styleClone);
+                }
+                
+                // ២. បើកទម្រង់ Overflow ឱ្យឃើញពេញលេញដើម្បីការពារកុំឱ្យដាច់ប្រអប់ខាងក្រោម
+                const clonedArea = clonedDoc.getElementById('capture-area');
+                if (clonedArea) {
+                    clonedArea.style.overflow = 'visible';
+                    clonedArea.style.height = originalHeight + 'px';
+                }
+            }
         }).then(canvas => {
             const pngURL = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
-            downloadLink.href = pngURL; downloadLink.download = `Glyph_Full_Box_${selectedGlyphIndex}.png`;
-            document.body.appendChild(downloadLink); downloadLink.click(); document.body.removeChild(downloadLink);
-        }).catch(err => console.error(err));
+            downloadLink.href = pngURL; 
+            downloadLink.download = `Glyph_Full_Box_${selectedGlyphIndex}.png`;
+            document.body.appendChild(downloadLink); 
+            downloadLink.click(); 
+            document.body.removeChild(downloadLink);
+            
+            fullCardScreenshotBtn.style.opacity = "1";
+        }).catch(err => {
+            console.error(err);
+            fullCardScreenshotBtn.style.opacity = "1";
+        });
     });
 
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex, true); } });
