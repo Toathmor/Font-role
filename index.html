@@ -392,15 +392,19 @@
             <div style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;" id="modal-index">GLYPH INDEX: #0</div>
             
             <div class="modal-center-actions">
-                <button class="toggle-icon-btn active" id="toggle-lines-btn" title="បើក/បិទ ខ្សែបន្ទាត់ដេក (Metrics)">
+                <button class="toggle-icon-btn active" id="toggle-lines-btn" title="បើក/បិទ ខ្សែបន្ទាត់ដេក (Metrics Lines)">
                     <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <button class="toggle-icon-btn active" id="toggle-labels-btn" title="បើក/បិទ ស្លាកសញ្ញាអក្សរ (Metrics Labels)">
+                    <svg viewBox="0 0 24 24" style="stroke: currentColor; fill: none; stroke-width: 2;"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 15v-4a2 2 0 0 1 4 0v4M7 12h4M15 10v5M17 10v5"></path></svg>
                 </button>
                 <button class="toggle-icon-btn active" id="toggle-side-lines-btn" title="បើក/បិទ ខ្សែបន្ទាត់ឈរសងខាង (Side Bearings)">
                     <svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="21"></line><line x1="18" y1="3" x2="18" y2="21"></line></svg>
                 </button>
             </div>
             
-            <div></div> </div>
+            <div></div>
+        </div>
         
         <div class="modal-svg-container" id="modal-svg-holder"></div>
         
@@ -464,6 +468,7 @@
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
     const toggleLinesBtn = document.getElementById('toggle-lines-btn');
+    const toggleLabelsBtn = document.getElementById('toggle-labels-btn');
     const toggleSideLinesBtn = document.getElementById('toggle-side-lines-btn');
 
     const popupZoomSlider = document.getElementById('popup-zoom-slider');
@@ -478,11 +483,12 @@
     const hudWidth = document.getElementById('hud-width');
 
     let currentFont = null;
-    let currentBase64Font = ""; // បង្កើត Global variable សម្រាប់រក្សាទុកទិន្នន័យ Base64 Font
+    let currentBase64Font = ""; 
     let glyphScale = 65;
     let selectedGlyphIndex = 0;
     let chosenGlyphColor = "#dcac57"; 
     let showVectorLines = true; 
+    let showMetricsLabels = true; // បង្កើត State ថ្មីសម្រាប់គ្រប់គ្រងការ បើក/បិទ ស្លាកសញ្ញាអក្សរ
     let showSideLines = true; 
     
     let baseZoomLevel = 1.0;
@@ -510,6 +516,13 @@
     toggleLinesBtn.addEventListener('click', function() {
         showVectorLines = !showVectorLines;
         toggleLinesBtn.classList.toggle('active', showVectorLines);
+        if (currentFont) updateModalContent(false);
+    });
+
+    // បន្ថែមព្រឹត្តិការណ៍ Click ទៅលើប៊ូតុងថ្មីសម្រាប់ បើក/បិទ ស្លាកសញ្ញាអក្សរ (Badges)
+    toggleLabelsBtn.addEventListener('click', function() {
+        showMetricsLabels = !showMetricsLabels;
+        toggleLabelsBtn.classList.toggle('active', showMetricsLabels);
         if (currentFont) updateModalContent(false);
     });
 
@@ -555,7 +568,7 @@
                     binary += String.fromCharCode(dataView[i]);
                 }
                 const base64FontData = btoa(binary);
-                currentBase64Font = base64FontData; // រក្សាទុកក្នុង Global context
+                currentBase64Font = base64FontData; 
                 
                 const oldStyle = document.getElementById('dynamic-font-face');
                 if (oldStyle) oldStyle.remove();
@@ -572,7 +585,6 @@
                     }
                 `;
                 
-                // បញ្ចូលទៅក្នុង capture-area ដើម្បីឱ្យ html2canvas អាចអាន Font នេះបានពេលទាញយករូបភាព
                 const captureArea = document.getElementById('capture-area');
                 if (captureArea) {
                     captureArea.appendChild(fontDynamicStyle);
@@ -718,9 +730,6 @@
         svgElement.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
         svgElement.id = "target-glyph-svg";
 
-        const defs = document.createElementNS(svgNS, "defs");
-        // លុបផ្នែក clipPath ចេញ ដើម្បីកុំឱ្យដាច់អក្សរនៅពេលវាយសរសេរវែងៗ (No clipping boundary)
-
         const styleElement = document.createElementNS(svgNS, "style");
         styleElement.textContent = `
             @font-face {
@@ -747,18 +756,21 @@
             line.setAttribute("stroke-dasharray", "4,4");
             g.appendChild(line);
 
-            const rect = document.createElementNS(svgNS, "rect");
-            rect.setAttribute("x", "15"); rect.setAttribute("y", y - 9);
-            rect.setAttribute("width", "75"); rect.setAttribute("height", "18");
-            rect.setAttribute("rx", "4"); rect.setAttribute("fill", tagColor);
-            rect.setAttribute("opacity", "0.75");
-            g.appendChild(rect);
+            // លក្ខខណ្ឌពិនិត្យ៖ បើសិនជា showMetricsLabels = true ទើបបង្កើតផ្ទាំងស្លាកសញ្ញាអក្សរពណ៌
+            if (showMetricsLabels) {
+                const rect = document.createElementNS(svgNS, "rect");
+                rect.setAttribute("x", "15"); rect.setAttribute("y", y - 9);
+                rect.setAttribute("width", "75"); rect.setAttribute("height", "18");
+                rect.setAttribute("rx", "4"); rect.setAttribute("fill", tagColor);
+                rect.setAttribute("opacity", "0.75");
+                g.appendChild(rect);
 
-            const svgText = document.createElementNS(svgNS, "text");
-            svgText.setAttribute("x", "20"); svgText.setAttribute("y", y + 4);
-            svgText.className.baseVal = "metric-lbl-txt";
-            svgText.textContent = `${text}:${rawValue}`;
-            g.appendChild(svgText);
+                const svgText = document.createElementNS(svgNS, "text");
+                svgText.setAttribute("x", "20"); svgText.setAttribute("y", y + 4);
+                svgText.className.baseVal = "metric-lbl-txt";
+                svgText.textContent = `${text}:${rawValue}`;
+                g.appendChild(svgText);
+            }
             return g;
         }
 
@@ -771,11 +783,13 @@
             line.setAttribute("stroke-dasharray", "3,3");
             g.appendChild(line);
 
-            const svgText = document.createElementNS(svgNS, "text");
-            svgText.setAttribute("x", x + 6); svgText.setAttribute("y", baselineY + 22);
-            svgText.className.baseVal = "v-grid-text";
-            svgText.textContent = text;
-            g.appendChild(svgText);
+            if (showMetricsLabels) {
+                const svgText = document.createElementNS(svgNS, "text");
+                svgText.setAttribute("x", x + 6); svgText.setAttribute("y", baselineY + 22);
+                svgText.className.baseVal = "v-grid-text";
+                svgText.textContent = text;
+                g.appendChild(svgText);
+            }
             return g;
         }
 
@@ -792,7 +806,6 @@
         }
 
         const textGroup = document.createElementNS(svgNS, "g");
-        // លុបការហៅប្រើ clip-path ចេញពីទីនេះ ដើម្បីកុំឱ្យដាច់តួអក្សរវែងៗ
         
         const userTypedText = modalReviewTextField.value;
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
