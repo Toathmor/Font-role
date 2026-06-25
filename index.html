@@ -478,6 +478,7 @@
     const hudWidth = document.getElementById('hud-width');
 
     let currentFont = null;
+    let currentBase64Font = ""; // បង្កើត Global variable សម្រាប់រក្សាទុកទិន្នន័យ Base64 Font
     let glyphScale = 65;
     let selectedGlyphIndex = 0;
     let chosenGlyphColor = "#dcac57"; 
@@ -554,6 +555,7 @@
                     binary += String.fromCharCode(dataView[i]);
                 }
                 const base64FontData = btoa(binary);
+                currentBase64Font = base64FontData; // រក្សាទុកក្នុង Global context
                 
                 const oldStyle = document.getElementById('dynamic-font-face');
                 if (oldStyle) oldStyle.remove();
@@ -569,7 +571,14 @@
                         text-anchor: middle;
                     }
                 `;
-                document.head.appendChild(fontDynamicStyle);
+                
+                // បញ្ចូលទៅក្នុង capture-area ដើម្បីឱ្យ html2canvas អាចអាន Font នេះបានពេលទាញយករូបភាព
+                const captureArea = document.getElementById('capture-area');
+                if (captureArea) {
+                    captureArea.appendChild(fontDynamicStyle);
+                } else {
+                    document.head.appendChild(fontDynamicStyle);
+                }
                 
                 fontHistorySelect.innerHTML = `<option value="0">${file.name}</option>`;
                 fontSelectorGroup.style.display = 'flex';
@@ -710,19 +719,14 @@
         svgElement.id = "target-glyph-svg";
 
         const defs = document.createElementNS(svgNS, "defs");
-        const clipPath = document.createElementNS(svgNS, "clipPath");
-        clipPath.setAttribute("id", "glyph-area-clip");
-        const clipRect = document.createElementNS(svgNS, "rect");
-        clipRect.setAttribute("x", "100"); 
-        clipRect.setAttribute("y", "-500");
-        clipRect.setAttribute("width", baseW - 100);
-        clipRect.setAttribute("height", "2000");
-        clipPath.appendChild(clipRect);
-        defs.appendChild(clipPath);
-        svgElement.appendChild(defs);
+        // លុបផ្នែក clipPath ចេញ ដើម្បីកុំឱ្យដាច់អក្សរនៅពេលវាយសរសេរវែងៗ (No clipping boundary)
 
         const styleElement = document.createElementNS(svgNS, "style");
         styleElement.textContent = `
+            @font-face {
+                font-family: '${fontUniqueId}';
+                src: url('data:font/opentype;base64,${currentBase64Font}');
+            }
             .bg-rect { fill: #070a10; }
             .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: rgba(168, 85, 247, 0.5); }
             .metric-lbl-txt { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: #ffffff; }
@@ -788,7 +792,7 @@
         }
 
         const textGroup = document.createElementNS(svgNS, "g");
-        textGroup.setAttribute("clip-path", "url(#glyph-area-clip)");
+        // លុបការហៅប្រើ clip-path ចេញពីទីនេះ ដើម្បីកុំឱ្យដាច់តួអក្សរវែងៗ
         
         const userTypedText = modalReviewTextField.value;
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
@@ -912,49 +916,14 @@
         const captureArea = document.getElementById('capture-area');
         if (!captureArea) return;
 
-        fullCardScreenshotBtn.style.opacity = "0.5";
-
-        // វាស់វែងកម្ពស់ពិតប្រាកដរបស់ Element ទាំងមូលដើម្បីកុំឱ្យដាច់ប្រអប់
-        const originalHeight = captureArea.scrollHeight;
-        const originalWidth = captureArea.scrollWidth;
-
         html2canvas(captureArea, {
-            backgroundColor: '#131926', 
-            scale: 2, 
-            logging: false, 
-            useCORS: true,
-            allowTaint: true,
-            width: originalWidth,
-            height: originalHeight,
-            onclone: function(clonedDoc) {
-                // ១. បង្ខំឱ្យចម្លងស្ទីល Font ចូលទៅក្នុងប្រព័ន្ធចម្លងរបស់ html2canvas
-                const dynamicStyle = document.getElementById('dynamic-font-face');
-                if (dynamicStyle) {
-                    const styleClone = dynamicStyle.cloneNode(true);
-                    clonedDoc.head.appendChild(styleClone);
-                }
-                
-                // ២. បើកទម្រង់ Overflow ឱ្យឃើញពេញលេញដើម្បីការពារកុំឱ្យដាច់ប្រអប់ខាងក្រោម
-                const clonedArea = clonedDoc.getElementById('capture-area');
-                if (clonedArea) {
-                    clonedArea.style.overflow = 'visible';
-                    clonedArea.style.height = originalHeight + 'px';
-                }
-            }
+            backgroundColor: '#131926', scale: 2, logging: false, useCORS: true
         }).then(canvas => {
             const pngURL = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
-            downloadLink.href = pngURL; 
-            downloadLink.download = `Glyph_Full_Box_${selectedGlyphIndex}.png`;
-            document.body.appendChild(downloadLink); 
-            downloadLink.click(); 
-            document.body.removeChild(downloadLink);
-            
-            fullCardScreenshotBtn.style.opacity = "1";
-        }).catch(err => {
-            console.error(err);
-            fullCardScreenshotBtn.style.opacity = "1";
-        });
+            downloadLink.href = pngURL; downloadLink.download = `Glyph_Full_Box_${selectedGlyphIndex}.png`;
+            document.body.appendChild(downloadLink); downloadLink.click(); document.body.removeChild(downloadLink);
+        }).catch(err => console.error(err));
     });
 
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex, true); } });
