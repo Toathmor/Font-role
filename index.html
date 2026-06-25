@@ -483,6 +483,7 @@
     let chosenGlyphColor = "#dcac57"; 
     let showVectorLines = true; 
     let showSideLines = true; 
+    let globalBase64FontData = ""; 
     
     let baseZoomLevel = 1.0;
     let panX = 0; let panY = 0;
@@ -554,6 +555,7 @@
                     binary += String.fromCharCode(dataView[i]);
                 }
                 const base64FontData = btoa(binary);
+                globalBase64FontData = base64FontData;
                 
                 const oldStyle = document.getElementById('dynamic-font-face');
                 if (oldStyle) oldStyle.remove();
@@ -641,7 +643,7 @@
                 const textElement = document.createElementNS(svgNS, "text");
                 textElement.setAttribute("x", "50%"); textElement.setAttribute("y", "50%");
                 textElement.setAttribute("dominant-baseline", "middle"); textElement.setAttribute("text-anchor", "middle");
-                textElement.setAttribute("fill", "var(--text-muted)"); textElement.setAttribute("font-size", "10");
+                textElement.setAttribute("fill", "#94a3b8"); textElement.setAttribute("font-size", "10");
                 textElement.style.setProperty("font-family", "'Kantumruy Pro', sans-serif", "important");
                 textElement.textContent = glyph.name === 'space' ? '[លំហ]' : '[]';
                 svgElement.appendChild(textElement);
@@ -727,7 +729,7 @@
         const styleElement = document.createElementNS(svgNS, "style");
         styleElement.textContent = `
             .bg-rect { fill: #070a10; }
-            .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: rgba(168, 85, 247, 0.5); }
+            .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: rgba(168, 85, 247, 0.6); }
             .metric-lbl-txt { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: #ffffff; }
         `;
         svgElement.appendChild(styleElement);
@@ -786,8 +788,8 @@
         }
 
         if (showSideLines) {
-            svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.35)"));
-            svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.45)"));
+            svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.5)"));
+            svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.6)"));
         }
 
         const textGroup = document.createElementNS(svgNS, "g");
@@ -796,7 +798,6 @@
         const userTypedText = modalReviewTextField.value;
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
 
-        // បើសិនជាអ្នកប្រើប្រាស់វាយអត្ថបទថ្មីដើម្បីផ្គុំពាក្យ ត្រូវបង្ហាញជាទម្រង់ <text>
         if (userTypedText && userTypedText !== glyphChar) {
             const nativeTextNode = document.createElementNS(svgNS, "text");
             nativeTextNode.setAttribute("x", "50%");
@@ -805,7 +806,6 @@
             nativeTextNode.textContent = userTypedText;
             textGroup.appendChild(nativeTextNode);
         } else {
-            // បើសិនជាការបង្ហាញធម្មតា (ទោះគ្មាន Unicode ឬជា Ligature) ត្រូវគូរខ្សែវ៉ិចទ័រផ្ទាល់ពី Font ដើម្បីកុំឱ្យបាត់រូបរាង
             const glyphScaleFactor = fScale * uM;
             const pathData = glyph.getPath(dx, baselineY, glyphScaleFactor).toPathData(3);
             
@@ -818,7 +818,8 @@
                 const textElement = document.createElementNS(svgNS, "text");
                 textElement.setAttribute("x", "50%"); textElement.setAttribute("y", "50%");
                 textElement.setAttribute("dominant-baseline", "middle"); textElement.setAttribute("text-anchor", "middle");
-                textElement.setAttribute("fill", "var(--text-muted)"); textElement.setAttribute("font-size", "14");
+                textElement.setAttribute("fill", "#94a3b8"); textElement.setAttribute("font-size", "14");
+                textElement.style.setProperty("font-family", "'Kantumruy Pro', sans-serif", "important");
                 textElement.textContent = glyph.name === 'space' ? '[លំហ - Space]' : '[គ្មានរូបរាង - Empty]';
                 textGroup.appendChild(textElement);
             }
@@ -889,6 +890,22 @@
         const clonedSvg = svgElement.cloneNode(true);
         clonedSvg.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
 
+        let styleTag = clonedSvg.querySelector('style');
+        if (!styleTag) {
+            styleTag = document.createElementNS("http://www.w3.org/2000/svg", "style");
+            clonedSvg.appendChild(styleTag);
+        }
+        styleTag.textContent += `
+            @font-face {
+                font-family: '${fontUniqueId}';
+                src: url('data:font/opentype;base64,${globalBase64FontData}');
+            }
+            .khmer-perfect-text {
+                font-family: '${fontUniqueId}', sans-serif !important;
+                fill: ${chosenGlyphColor} !important;
+            }
+        `;
+
         const svgString = new XMLSerializer().serializeToString(clonedSvg);
         const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
         const URL = window.URL || window.webkitURL || window;
@@ -914,8 +931,41 @@
         const captureArea = document.getElementById('capture-area');
         if (!captureArea) return;
 
+        const svgElement = document.getElementById('target-glyph-svg');
+        if (svgElement) {
+            let styleTag = svgElement.querySelector('style');
+            if (!styleTag) {
+                styleTag = document.createElementNS("http://www.w3.org/2000/svg", "style");
+                svgElement.appendChild(styleTag);
+            }
+            if (!styleTag.textContent.includes('@font-face')) {
+                styleTag.textContent += `
+                    @font-face {
+                        font-family: '${fontUniqueId}';
+                        src: url('data:font/opentype;base64,${globalBase64FontData}');
+                    }
+                    .khmer-perfect-text {
+                        font-family: '${fontUniqueId}', sans-serif !important;
+                        fill: ${chosenGlyphColor} !important;
+                    }
+                `;
+            }
+        }
+
         html2canvas(captureArea, {
-            backgroundColor: '#131926', scale: 2, logging: false, useCORS: true
+            backgroundColor: '#131926', scale: 2, logging: false, useCORS: true, allowTaint: true,
+            onclone: function(clonedDocument) {
+                const clonedSvg = clonedDocument.getElementById('target-glyph-svg');
+                if (clonedSvg) {
+                    clonedSvg.style.transform = 'none';
+                    const texts = clonedSvg.getElementsByTagName('text');
+                    for(let txt of texts) {
+                        if(txt.getAttribute('fill') === 'var(--text-muted)') {
+                            txt.setAttribute('fill', '#94a3b8');
+                        }
+                    }
+                }
+            }
         }).then(canvas => {
             const pngURL = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
