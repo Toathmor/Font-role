@@ -793,13 +793,36 @@
         const textGroup = document.createElementNS(svgNS, "g");
         textGroup.setAttribute("clip-path", "url(#glyph-area-clip)");
         
-        const currentLiveText = modalReviewTextField.value || (glyph.unicode ? String.fromCharCode(glyph.unicode) : ' ');
-        const nativeTextNode = document.createElementNS(svgNS, "text");
-        nativeTextNode.setAttribute("x", "50%");
-        nativeTextNode.setAttribute("y", baselineY);
-        nativeTextNode.className.baseVal = "khmer-perfect-text";
-        nativeTextNode.textContent = currentLiveText;
-        textGroup.appendChild(nativeTextNode);
+        const userTypedText = modalReviewTextField.value;
+        const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
+
+        // បើសិនជាអ្នកប្រើប្រាស់វាយអត្ថបទថ្មីដើម្បីផ្គុំពាក្យ ត្រូវបង្ហាញជាទម្រង់ <text>
+        if (userTypedText && userTypedText !== glyphChar) {
+            const nativeTextNode = document.createElementNS(svgNS, "text");
+            nativeTextNode.setAttribute("x", "50%");
+            nativeTextNode.setAttribute("y", baselineY);
+            nativeTextNode.className.baseVal = "khmer-perfect-text";
+            nativeTextNode.textContent = userTypedText;
+            textGroup.appendChild(nativeTextNode);
+        } else {
+            // បើសិនជាការបង្ហាញធម្មតា (ទោះគ្មាន Unicode ឬជា Ligature) ត្រូវគូរខ្សែវ៉ិចទ័រផ្ទាល់ពី Font ដើម្បីកុំឱ្យបាត់រូបរាង
+            const glyphScaleFactor = fScale * uM;
+            const pathData = glyph.getPath(dx, baselineY, glyphScaleFactor).toPathData(3);
+            
+            if (pathData && glyph.path && glyph.path.commands && glyph.path.commands.length > 0) {
+                const pathElement = document.createElementNS(svgNS, "path");
+                pathElement.setAttribute("d", pathData);
+                pathElement.setAttribute("fill", chosenGlyphColor);
+                textGroup.appendChild(pathElement);
+            } else {
+                const textElement = document.createElementNS(svgNS, "text");
+                textElement.setAttribute("x", "50%"); textElement.setAttribute("y", "50%");
+                textElement.setAttribute("dominant-baseline", "middle"); textElement.setAttribute("text-anchor", "middle");
+                textElement.setAttribute("fill", "var(--text-muted)"); textElement.setAttribute("font-size", "14");
+                textElement.textContent = glyph.name === 'space' ? '[លំហ - Space]' : '[គ្មានរូបរាង - Empty]';
+                textGroup.appendChild(textElement);
+            }
+        }
         svgElement.appendChild(textGroup);
 
         modalSvgHolder.appendChild(svgElement);
