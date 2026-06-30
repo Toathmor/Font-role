@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Khmer Glyph">
     <meta name="theme-color" content="#0b0f19">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvTUh6MUduY3cvSU1HLTMxNzgucG5nIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXSwKICAic3RhcnRfdXJsIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJpbWFyeSIKfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICIncmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvTUh6MUduY3cvSU1HLTMxNzgucG5nIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXSwKICAic3RhcnRfdXJsIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogIn0dYW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJまと"---
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -731,9 +731,10 @@
         const capHeightY = baselineY - (capHeight * fScale);
         const descenderY = baselineY - (descender * fScale);
         
-        // កែសម្រួល៖ ចាប់ផ្តើមគំនូសគម្លាតអក្សរចេញពីចំណុចកូអរដោនេខាងឆ្វេង (ដេញតាមលំដាប់លំដោយមិនឱ្យជាន់គ្នា)
-        const leftSideLineX = 150; 
-        const rightSideLineX = leftSideLineX + (advanceWidth * fScale);
+        // 🚀 ដំណោះស្រាយគណនាឱ្យរត់ចំកណ្តាលផ្ទាំង (Auto-Centering) មិនទើសស្លាកសញ្ញាខាងឆ្វេង
+        const glyphRenderWidth = advanceWidth * fScale;
+        const leftSideLineX = (baseW - glyphRenderWidth) / 2; 
+        const rightSideLineX = leftSideLineX + glyphRenderWidth;
 
         const svgNS = "http://www.w3.org/2000/svg";
         const svgElement = document.createElementNS(svgNS, "svg");
@@ -821,10 +822,9 @@
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
         const glyphScaleFactor = fScale * uM;
 
-        // កែសម្រួល៖ ប្តូរការបង្ហាញពី "center" មកចាប់ផ្តើមត្រង់គែមឆ្វេង (LSB) ដើម្បីរក្សាការផ្គុំជើងអក្សរខ្មែរឱ្យបានត្រឹមត្រូវបំផុត
         if (userTypedText && userTypedText !== glyphChar) {
             const nativeTextNode = document.createElementNS(svgNS, "text");
-            nativeTextNode.setAttribute("x", leftSideLineX); // ចាប់ផ្តើមសរសេរពី LSB ទៅខាងស្តាំ
+            nativeTextNode.setAttribute("x", leftSideLineX); 
             nativeTextNode.setAttribute("y", baselineY);
             nativeTextNode.setAttribute("class", "khmer-perfect-text");
             nativeTextNode.setAttribute("font-size", glyphScaleFactor);
@@ -917,19 +917,15 @@
         let exportW = baseW;
         let exportH = baseH;
 
-        // កែសម្រួលពិសេស៖ ស្វែងរកទំហំផ្ទៃពិតប្រាកដ (BBox) របស់ពាក្យទាំងអស់ រួចពង្រីកទទឹងប្រអប់ថតស្វ័យប្រវត្តិកុំឱ្យដាច់ពាក្យកណ្តាល
         if (textGroup) {
             try {
                 const bbox = textGroup.getBBox();
-                const paddingX = 220; // បន្ថែមគម្លាតសងខាងឱ្យសល់ផ្ទៃស្អាត
+                const paddingX = 220; 
                 
-                // បើប្រវែងពាក្យសរសេរវែងហួសផ្ទាំង Canvas ធម្មតា យើងទាញពង្រីកវាភ្លាម
                 if ((bbox.width + paddingX) > baseW) {
                     exportW = Math.ceil(bbox.width + paddingX);
-                    // កំណត់ ViewBox ឱ្យបង្ហាញទម្រង់ពាក្យ និង Guideline ទាំងអស់ឱ្យចំកណ្តាលពេញលេញ
                     clonedSvg.setAttribute("viewBox", `0 0 ${exportW} ${baseH}`);
                     
-                    // កែតម្រូវផ្ទៃខាងក្រោយពណ៌ខ្មៅឱ្យធំទៅតាមទំហំថ្មី
                     const clonedBg = clonedSvg.querySelector('.bg-rect');
                     if (clonedBg) clonedBg.setAttribute("width", exportW);
                 } else {
@@ -950,7 +946,6 @@
         const image = new Image();
         image.onload = function() {
             const canvas = document.createElement('canvas');
-            // កំណត់គុណភាពច្បាស់ x2 (High-Resolution 8K standard) នៃទំហំដែលបានវាស់វែងរួច
             canvas.width = exportW * 2; canvas.height = exportH * 2;
             const context = canvas.getContext('2d');
             context.drawImage(image, 0, 0, exportW * 2, exportH * 2);
