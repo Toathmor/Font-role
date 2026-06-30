@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Khmer Glyph">
     <meta name="theme-color" content="#0b0f19">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXNrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvTUh6MUduY3cvSU1HLTMxNzgucG5nIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXSwKICAic3RhcnRfdXJsIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJpbWFyeSIKfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvTUh6MUduY3cvSU1HLTMxNzgucG5nIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXSwKICAic3RhcnRfdXJsIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJpbWFyeSIKfQ==">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -499,7 +499,7 @@
     let selectedGlyphIndex = 0;
     let chosenGlyphColor = "#dcac57"; 
     let showVectorLines = true; 
-    let showMetricsLabels = true; // បង្កើត State ថ្មីសម្រាប់គ្រប់គ្រងការ បើក/បិទ ស្លាកសញ្ញាអក្សរ
+    let showMetricsLabels = true; 
     let showSideLines = true; 
     
     let baseZoomLevel = 1.0;
@@ -530,7 +530,6 @@
         if (currentFont) updateModalContent(false);
     });
 
-    // បន្ថែមព្រឹត្តិការណ៍ Click ទៅលើប៊ូតុងថ្មីសម្រាប់ បើក/បិទ ស្លាកសញ្ញាអក្សរ (Badges)
     toggleLabelsBtn.addEventListener('click', function() {
         showMetricsLabels = !showMetricsLabels;
         toggleLabelsBtn.classList.toggle('active', showMetricsLabels);
@@ -592,7 +591,7 @@
                         src: url('data:font/opentype;base64,${base64FontData}');
                     }
                     .khmer-perfect-text {
-                        text-anchor: middle;
+                        dominant-baseline: alphabetic;
                     }
                 `;
                 
@@ -732,9 +731,9 @@
         const capHeightY = baselineY - (capHeight * fScale);
         const descenderY = baselineY - (descender * fScale);
         
-        const dx = (baseW - (advanceWidth * fScale)) / 2;
-        const leftSideLineX = dx;
-        const rightSideLineX = dx + (advanceWidth * fScale);
+        // កែសម្រួល៖ ចាប់ផ្តើមគំនូសគម្លាតអក្សរចេញពីចំណុចកូអរដោនេខាងឆ្វេង (ដេញតាមលំដាប់លំដោយមិនឱ្យជាន់គ្នា)
+        const leftSideLineX = 150; 
+        const rightSideLineX = leftSideLineX + (advanceWidth * fScale);
 
         const svgNS = "http://www.w3.org/2000/svg";
         const svgElement = document.createElementNS(svgNS, "svg");
@@ -748,7 +747,7 @@
                 src: url('data:font/opentype;base64,${currentBase64Font}');
             }
             .bg-rect { fill: #070a10; }
-            .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: rgba(168, 85, 247, 0.5); }
+            .v-grid-text { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: rgba(168, 85, 247, 0.7); }
             .metric-lbl-txt { font-family: 'Kantumruy Pro', sans-serif !important; font-size: 10px; font-weight: bold; fill: #ffffff; }
         `;
         svgElement.appendChild(styleElement);
@@ -767,7 +766,6 @@
             line.setAttribute("stroke-dasharray", "4,4");
             g.appendChild(line);
 
-            // លក្ខខណ្ឌពិនិត្យ៖ បើសិនជា showMetricsLabels = true ទើបបង្កើតផ្ទាំងស្លាកសញ្ញាអក្សរពណ៌
             if (showMetricsLabels) {
                 const rect = document.createElementNS(svgNS, "rect");
                 rect.setAttribute("x", "15"); rect.setAttribute("y", y - 9);
@@ -790,7 +788,7 @@
             const line = document.createElementNS(svgNS, "line");
             line.setAttribute("x1", x); line.setAttribute("y1", "-10000");
             line.setAttribute("x2", x); line.setAttribute("y2", "10000");
-            line.setAttribute("stroke", lineColor); line.setAttribute("stroke-width", "0.5");
+            line.setAttribute("stroke", lineColor); line.setAttribute("stroke-width", "0.6");
             line.setAttribute("stroke-dasharray", "3,3");
             g.appendChild(line);
 
@@ -812,19 +810,21 @@
         }
 
         if (showSideLines) {
-            svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.35)"));
-            svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.45)"));
+            svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.6)"));
+            svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.7)"));
         }
 
         const textGroup = document.createElementNS(svgNS, "g");
+        textGroup.id = "target-text-group"; 
         
         const userTypedText = modalReviewTextField.value;
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
         const glyphScaleFactor = fScale * uM;
 
+        // កែសម្រួល៖ ប្តូរការបង្ហាញពី "center" មកចាប់ផ្តើមត្រង់គែមឆ្វេង (LSB) ដើម្បីរក្សាការផ្គុំជើងអក្សរខ្មែរឱ្យបានត្រឹមត្រូវបំផុត
         if (userTypedText && userTypedText !== glyphChar) {
             const nativeTextNode = document.createElementNS(svgNS, "text");
-            nativeTextNode.setAttribute("x", "50%");
+            nativeTextNode.setAttribute("x", leftSideLineX); // ចាប់ផ្តើមសរសេរពី LSB ទៅខាងស្តាំ
             nativeTextNode.setAttribute("y", baselineY);
             nativeTextNode.setAttribute("class", "khmer-perfect-text");
             nativeTextNode.setAttribute("font-size", glyphScaleFactor);
@@ -833,7 +833,7 @@
             nativeTextNode.textContent = userTypedText;
             textGroup.appendChild(nativeTextNode);
         } else {
-            const pathData = glyph.getPath(dx, baselineY, glyphScaleFactor).toPathData(3);
+            const pathData = glyph.getPath(leftSideLineX, baselineY, glyphScaleFactor).toPathData(3);
             
             if (pathData && glyph.path && glyph.path.commands && glyph.path.commands.length > 0) {
                 const pathElement = document.createElementNS(svgNS, "path");
@@ -910,10 +910,37 @@
 
     screenshotBtn.addEventListener('click', function() {
         const svgElement = document.getElementById('target-glyph-svg');
+        const textGroup = document.getElementById('target-text-group');
         if (!svgElement) return;
 
         const clonedSvg = svgElement.cloneNode(true);
-        clonedSvg.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
+        let exportW = baseW;
+        let exportH = baseH;
+
+        // កែសម្រួលពិសេស៖ ស្វែងរកទំហំផ្ទៃពិតប្រាកដ (BBox) របស់ពាក្យទាំងអស់ រួចពង្រីកទទឹងប្រអប់ថតស្វ័យប្រវត្តិកុំឱ្យដាច់ពាក្យកណ្តាល
+        if (textGroup) {
+            try {
+                const bbox = textGroup.getBBox();
+                const paddingX = 220; // បន្ថែមគម្លាតសងខាងឱ្យសល់ផ្ទៃស្អាត
+                
+                // បើប្រវែងពាក្យសរសេរវែងហួសផ្ទាំង Canvas ធម្មតា យើងទាញពង្រីកវាភ្លាម
+                if ((bbox.width + paddingX) > baseW) {
+                    exportW = Math.ceil(bbox.width + paddingX);
+                    // កំណត់ ViewBox ឱ្យបង្ហាញទម្រង់ពាក្យ និង Guideline ទាំងអស់ឱ្យចំកណ្តាលពេញលេញ
+                    clonedSvg.setAttribute("viewBox", `0 0 ${exportW} ${baseH}`);
+                    
+                    // កែតម្រូវផ្ទៃខាងក្រោយពណ៌ខ្មៅឱ្យធំទៅតាមទំហំថ្មី
+                    const clonedBg = clonedSvg.querySelector('.bg-rect');
+                    if (clonedBg) clonedBg.setAttribute("width", exportW);
+                } else {
+                    clonedSvg.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
+                }
+            } catch (err) {
+                clonedSvg.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
+            }
+        } else {
+            clonedSvg.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
+        }
 
         const svgString = new XMLSerializer().serializeToString(clonedSvg);
         const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
@@ -923,9 +950,10 @@
         const image = new Image();
         image.onload = function() {
             const canvas = document.createElement('canvas');
-            canvas.width = baseW * 2; canvas.height = baseH * 2;
+            // កំណត់គុណភាពច្បាស់ x2 (High-Resolution 8K standard) នៃទំហំដែលបានវាស់វែងរួច
+            canvas.width = exportW * 2; canvas.height = exportH * 2;
             const context = canvas.getContext('2d');
-            context.drawImage(image, 0, 0, baseW * 2, baseH * 2);
+            context.drawImage(image, 0, 0, exportW * 2, exportH * 2);
             
             const pngURL = canvas.toDataURL('image/png');
             const downloadLink = document.createElement('a');
