@@ -233,18 +233,23 @@
         
         .loading { text-align: center; font-size: 0.78rem; font-weight: 600; color: var(--accent); display: none; padding: 15px 0; }
 
+        /* 🌟 កែសម្រួល៖ រក្សាភាពនឹងដាច់ខាត ទោះបើកក្តារចុចទូរស័ព្ទ */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 7, 12, 0.85); backdrop-filter: blur(12px);
+            position: fixed !important; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 7, 12, 0.9); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex; align-items: center; justify-content: center; z-index: 1000;
             opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+            overflow: hidden; 
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
+        /* 🌟 កែសម្រួល៖ បង្កើតទម្រង់ Flex និងដាក់លក្ខខណ្ឌកម្ពស់អតិបរមា */
         .modal-content {
             background: var(--panel-bg); padding: 18px; border-radius: 18px;
-            width: 95%; max-width: 880px; position: relative; border: 1px solid var(--border);
+            width: 95%; max-width: 880px; max-height: 94vh; position: relative; border: 1px solid var(--border);
             transform: scale(0.96); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
 
@@ -275,8 +280,9 @@
         .toggle-icon-btn.active { color: var(--accent); background: var(--accent-glow); border-color: var(--accent); }
         .toggle-icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
+        /* 🌟 កែសម្រួល៖ ឱ្យវាបត់បែនទំហំតាមអេក្រង់ស្វ័យប្រវត្តិតែមិនរុញចោលទ្រង់ទ្រាយ */
         .modal-svg-container {
-            width: 100%; height: 380px; margin: 10px 0; background: var(--svg-bg); border-radius: 12px; border: 1px solid var(--border);
+            width: 100%; height: 380px; min-height: 180px; flex-grow: 1; margin: 10px 0; background: var(--svg-bg); border-radius: 12px; border: 1px solid var(--border);
             position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: grab;
         }
         .modal-svg-container:active { cursor: grabbing; }
@@ -303,10 +309,24 @@
         .hud-item strong { font-size: 0.8rem; color: var(--text-main); }
 
         .modal-bottom-header { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; gap: 10px; }
-        .modal-meta-left { min-width: 120px; }
-        .modal-meta-left h3 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main); }
         
-        .modal-review-input-wrapper { flex-grow: 1; position: relative; display: flex; align-items: center; }
+        /* 🌟 កែសម្រួល៖ បន្ថែមកម្ពស់ថេរ កុំឱ្យឈ្មោះ Glyph ធ្លាក់ជួររុញប្លុកផ្សេង */
+        .modal-meta-left { 
+            min-width: 150px; 
+            max-width: 200px; 
+            height: 42px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            overflow: hidden; 
+        }
+        .modal-meta-left h3 { 
+            margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main); 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
+        /* 🌟 កែសម្រួល៖ រក្សាកម្ពស់ប្រអប់វាយអក្សរឱ្យថេរ */
+        .modal-review-input-wrapper { flex-grow: 1; position: relative; display: flex; align-items: center; height: 38px; }
         .modal-review-input { width: 100%; height: 38px; background-color: var(--svg-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: all 0.2s; }
         .modal-review-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
 
@@ -333,7 +353,7 @@
             .prev-btn { left: 10px; top: auto; bottom: -60px; }
             .next-btn { right: 10px; top: auto; bottom: -60px; }
             .modal-content { margin-bottom: 70px; }
-            .modal-svg-container { height: 300px; }
+            .modal-svg-container { height: 260px; } /* កាត់បន្ថយកម្ពស់បន្តិចលើអេក្រង់តូច ការពារការហៀរ */
         }
 
         @media (max-width: 600px) {
@@ -685,6 +705,7 @@
         }
     }
 
+    /* 🌟 កែសម្រួល៖ បន្ថែមមុខងារចាក់សោ Scroll អេក្រង់មេ ពេលបើក Modal */
     function openGlyphModal(index, updateTextField = true) {
         if (!currentFont) return;
         selectedGlyphIndex = index;
@@ -692,9 +713,18 @@
         popupZoomSlider.value = 1.0; popupZoomValue.innerText = "100%";
         updateModalContent(updateTextField);
         glyphModal.classList.add('active');
+        
+        // ចាក់សោអេក្រង់ទូរស័ព្ទមិនឱ្យអូសចុះឡើង
+        document.body.style.overflow = 'hidden';
+        document.body.style.height = '100vh';
     }
 
-    function closeModal() { glyphModal.classList.remove('active'); }
+    /* 🌟 កែសម្រួល៖ ដោះសោ Scroll ពេលបិទ Modal */
+    function closeModal() { 
+        glyphModal.classList.remove('active'); 
+        document.body.style.overflow = '';
+        document.body.style.height = '';
+    }
 
     function updateModalContent(updateTextField = true) {
         const glyphs = currentFont.glyphs.glyphs;
@@ -770,7 +800,6 @@
         bgRect.className.baseVal = "bg-rect";
         svgElement.appendChild(bgRect);
 
-        // 🌟 បង្កើត Group សម្រាប់ផ្ទុក Elements ដែលត្រូវរំកិលតាម Pan/Zoom (ដូចជា Lines និង Glyphs)
         const transformedGroup = document.createElementNS(svgNS, "g");
         transformedGroup.id = "transformed-content-group";
 
@@ -852,11 +881,11 @@
         transformedGroup.appendChild(textGroup);
         svgElement.appendChild(transformedGroup);
 
-        // 🌟 នេះជាកន្លែងដោះស្រាយ៖ ដាក់ផ្លាកសញ្ញាដេក (Labels) នៅ Group ខាងក្រៅដាច់ដោយឡែក 
-        // ដើម្បីឱ្យវាស្ថិតនៅថេរកៀនខាងឆ្វេងបង្អស់ជានិច្ច ផុតពីតួអក្សរ ទោះជា Pan ទៅណាក៏ដោយ
+        /* 🌟 កែសម្រួល៖ បន្ថែម pointer-events: none កុំឱ្យរំខានដល់ការអូស Zoom */
         if (showVectorLines && showMetricsLabels) {
             const staticLabelsGroup = document.createElementNS(svgNS, "g");
             staticLabelsGroup.id = "static-labels-overlay";
+            staticLabelsGroup.style.pointerEvents = "none"; 
 
             function drawStaticTag(y, text, rawValue, tagColor) {
                 const g = document.createElementNS(svgNS, "g");
@@ -875,7 +904,6 @@
                 return g;
             }
 
-            // គណនាទីតាំង Y តាមរូបមន្តខាងលើ ប៉ុន្តែវានឹងមានលក្ខណៈស្របតាម PanY និង Zoom នៅពេល updateViewBox()
             staticLabelsGroup.appendChild(drawStaticTag(ascenderY, "ASC", ascender, "#f43f5e"));
             staticLabelsGroup.appendChild(drawStaticTag(capHeightY, "CAP", Math.round(capHeight), "#f59e0b"));
             staticLabelsGroup.appendChild(drawStaticTag(baselineY, "BASE", 0, "#10b981"));
@@ -896,21 +924,14 @@
         function updateViewBox() {
             if (!svgElement) return;
             
-            // គណនា ViewBox ទូទៅ
-            const newW = baseW / baseZoomLevel; const newH = baseH / baseZoomLevel;
-            const newX = ((baseW - newW) / 2) - panX; const newY = ((baseH - newH) / 2) - panY;
-            
-            // កំណត់ឱ្យរំកិល និង Zoom ទៅលើតែវត្ថុ និងខ្សែបន្ទាត់វាស់វែង
             if (transformedGroup) {
                 transformedGroup.setAttribute("transform", `translate(${panX}, ${panY}) scale(${baseZoomLevel}) translate(${((baseW/baseZoomLevel)-baseW)/2}, ${((baseH/baseZoomLevel)-baseH)/2})`);
             }
             
-            // សម្រាប់ផ្លាកសញ្ញា (Labels) ខាងឆ្វេង គឺឱ្យវា Zoom ធំតូចតាមកម្រិតធៀបនឹងខ្សែដេក ប៉ុន្តែមិនឱ្យវា Pan រំកិលតាមផ្ដេក (X) ឡើយ
             if (staticLabelsOverlay) {
                 staticLabelsOverlay.setAttribute("transform", `translate(0, ${panY}) scale(1, ${baseZoomLevel}) translate(0, ${((baseH/baseZoomLevel)-baseH)/2})`);
             }
             
-            // រក្សាទំហំ ViewBox មេឱ្យនៅថេរដដែល ដើម្បីកុំឱ្យបាត់បង់តុល្យភាពទ្រង់ទ្រាយរួម
             svgElement.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
         }
 
@@ -1031,7 +1052,9 @@
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex, true); } });
     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex < currentFont.numGlyphs - 1) { selectedGlyphIndex++; openGlyphModal(selectedGlyphIndex, true); } });
     closeModalBtn.addEventListener('click', closeModal);
-    glyphModal.addEventListener('click', (e) => { if (e.target === glyphModal) closeModal(); });
+    
+    /* 🌟 កែសម្រួល៖ លុបចោលមុខងារ click លើ background ដើម្បីបិទ (លោករក្សាទុកតែសញ្ញាខ្វែងផ្ទាល់) */
+    // glyphModal.addEventListener('click', (e) => { if (e.target === glyphModal) closeModal(); });
 </script>
 
 </body>
