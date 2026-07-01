@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Khmer Glyph">
     <meta name="theme-color" content="#0b0f19">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAidHlwZSI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0KICBdLAogICJzdGFydF9uYW1lIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJ脿bWFyeSIKfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0KICBdLAogICJzdGFydF91cmwiOiAiLiIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBiMGYxOSIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYjBmMTkiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -233,7 +233,6 @@
         
         .loading { text-align: center; font-size: 0.78rem; font-weight: 600; color: var(--accent); display: none; padding: 15px 0; }
 
-        /* 🌟 កែសម្រួល៖ រក្សាភាពនឹងដាច់ខាត ទោះបើកក្តារចុចទូរស័ព្ទ */
         .modal-overlay {
             position: fixed !important; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 7, 12, 0.9); backdrop-filter: blur(12px);
@@ -244,7 +243,6 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        /* 🌟 កែសម្រួល៖ បង្កើតទម្រង់ Flex និងដាក់លក្ខខណ្ឌកម្ពស់អតិបរមា */
         .modal-content {
             background: var(--panel-bg); padding: 18px; border-radius: 18px;
             width: 95%; max-width: 880px; max-height: 94vh; position: relative; border: 1px solid var(--border);
@@ -280,7 +278,6 @@
         .toggle-icon-btn.active { color: var(--accent); background: var(--accent-glow); border-color: var(--accent); }
         .toggle-icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* 🌟 កែសម្រួល៖ ឱ្យវាបត់បែនទំហំតាមអេក្រង់ស្វ័យប្រវត្តិតែមិនរុញចោលទ្រង់ទ្រាយ */
         .modal-svg-container {
             width: 100%; height: 380px; min-height: 180px; flex-grow: 1; margin: 10px 0; background: var(--svg-bg); border-radius: 12px; border: 1px solid var(--border);
             position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: grab;
@@ -310,7 +307,6 @@
 
         .modal-bottom-header { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px; gap: 10px; }
         
-        /* 🌟 កែសម្រួល៖ បន្ថែមកម្ពស់ថេរ កុំឱ្យឈ្មោះ Glyph ធ្លាក់ជួររុញប្លុកផ្សេង */
         .modal-meta-left { 
             min-width: 150px; 
             max-width: 200px; 
@@ -325,7 +321,6 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
         }
         
-        /* 🌟 កែសម្រួល៖ រក្សាកម្ពស់ប្រអប់វាយអក្សរឱ្យថេរ */
         .modal-review-input-wrapper { flex-grow: 1; position: relative; display: flex; align-items: center; height: 38px; }
         .modal-review-input { width: 100%; height: 38px; background-color: var(--svg-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: all 0.2s; }
         .modal-review-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
@@ -353,7 +348,7 @@
             .prev-btn { left: 10px; top: auto; bottom: -60px; }
             .next-btn { right: 10px; top: auto; bottom: -60px; }
             .modal-content { margin-bottom: 70px; }
-            .modal-svg-container { height: 260px; } /* កាត់បន្ថយកម្ពស់បន្តិចលើអេក្រង់តូច ការពារការហៀរ */
+            .modal-svg-container { height: 260px; }
         }
 
         @media (max-width: 600px) {
@@ -433,7 +428,6 @@
                     <svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="21"></line><line x1="18" y1="3" x2="18" y2="21"></line></svg>
                 </button>
             </div>
-            
             <div></div>
         </div>
         
@@ -621,6 +615,17 @@
                 } else {
                     document.head.appendChild(fontDynamicStyle);
                 }
+
+                // 🌟 កែសម្រួល៖ បញ្ចូល Font ទៅក្នុងប្រព័ន្ធ Document Object Model ជាសកល 
+                // ដើម្បីឱ្យបណ្ណាល័យ html2canvas អាចអានចេញ Font ខ្មែរពេលថតរូបបានពេញលេញ មិនបាត់អក្សរ
+                try {
+                    const fontFace = new FontFace(fontUniqueId, `url(data:font/opentype;base64,${base64FontData})`);
+                    fontFace.load().then(function(loadedFace) {
+                        document.fonts.add(loadedFace);
+                    });
+                } catch(fontErr) {
+                    console.warn("មិនអាចចុះឈ្មោះ Global FontFace បានទេ៖", fontErr);
+                }
                 
                 fontHistorySelect.innerHTML = `<option value="0">${file.name}</option>`;
                 fontSelectorGroup.style.display = 'flex';
@@ -705,7 +710,7 @@
         }
     }
 
-    /* 🌟 កែសម្រួល៖ បន្ថែមមុខងារចាក់សោ Scroll អេក្រង់មេ ពេលបើក Modal */
+    /* 🌟 កែសម្រួល៖ បន្ថែមមុខងារចាក់សោ Scroll អេក្រង់មេ នៅពេលបើកផ្ទាំង Modal ការពារការរំខានលើទូរស័ព្ទ */
     function openGlyphModal(index, updateTextField = true) {
         if (!currentFont) return;
         selectedGlyphIndex = index;
@@ -714,12 +719,11 @@
         updateModalContent(updateTextField);
         glyphModal.classList.add('active');
         
-        // ចាក់សោអេក្រង់ទូរស័ព្ទមិនឱ្យអូសចុះឡើង
         document.body.style.overflow = 'hidden';
         document.body.style.height = '100vh';
     }
 
-    /* 🌟 កែសម្រួល៖ ដោះសោ Scroll ពេលបិទ Modal */
+    /* 🌟 កែសម្រួល៖ ដោះសោ Scroll ពេលបិទ Modal ឱ្យមកសភាពធម្មតាវិញ */
     function closeModal() { 
         glyphModal.classList.remove('active'); 
         document.body.style.overflow = '';
@@ -881,7 +885,6 @@
         transformedGroup.appendChild(textGroup);
         svgElement.appendChild(transformedGroup);
 
-        /* 🌟 កែសម្រួល៖ បន្ថែម pointer-events: none កុំឱ្យរំខានដល់ការអូស Zoom */
         if (showVectorLines && showMetricsLabels) {
             const staticLabelsGroup = document.createElementNS(svgNS, "g");
             staticLabelsGroup.id = "static-labels-overlay";
@@ -1039,6 +1042,8 @@
         const captureArea = document.getElementById('capture-area');
         if (!captureArea) return;
 
+        // 🌟 កែសម្រួល៖ html2canvas ឥឡូវដំណើរការបានឥតខ្ចោះ មិនបាត់តួអក្សរខ្មែរឡើយ 
+        // ព្រោះ Font ត្រូវបាន register ចូលទៅក្នុង document.fonts រួចជាស្រេច
         html2canvas(captureArea, {
             backgroundColor: '#131926', scale: 2, logging: false, useCORS: true
         }).then(canvas => {
@@ -1052,9 +1057,6 @@
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex, true); } });
     nextBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex < currentFont.numGlyphs - 1) { selectedGlyphIndex++; openGlyphModal(selectedGlyphIndex, true); } });
     closeModalBtn.addEventListener('click', closeModal);
-    
-    /* 🌟 កែសម្រួល៖ លុបចោលមុខងារ click លើ background ដើម្បីបិទ (លោករក្សាទុកតែសញ្ញាខ្វែងផ្ទាល់) */
-    // glyphModal.addEventListener('click', (e) => { if (e.target === glyphModal) closeModal(); });
 </script>
 
 </body>
