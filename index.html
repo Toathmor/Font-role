@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Khmer Glyph">
     <meta name="theme-color" content="#0b0f19">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLnBvc3RpbWcuY2MvTUh6MUduY3cvSU1HLTMxNzgucG5nIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAicHVycG9zZSI6ICJhbnkgbWFza2FibGUiCiAgICB9CiAgXSwKICAic3RhcnRfdXJsIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJpbWFyeSIKfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAidHlwZSI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0KICBdLAogICJzdGFydF9uYW1lIjogIi4iLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYjBmMTkiLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGIwZjE5IiwKICAib3JpZW50YXRpb24iOiAicG9ydHJhaXQtcHJ脿bWFyeSIKfQ==">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -731,9 +731,22 @@
         const capHeightY = baselineY - (capHeight * fScale);
         const descenderY = baselineY - (descender * fScale);
         
-        // កែសម្រួល៖ ចាប់ផ្តើមគំនូសគម្លាតអក្សរចេញពីចំណុចកូអរដោនេខាងឆ្វេង (ដេញតាមលំដាប់លំដោយមិនឱ្យជាន់គ្នា)
-        const leftSideLineX = 150; 
+        const leftSideLineX = 150;
         const rightSideLineX = leftSideLineX + (advanceWidth * fScale);
+
+        let contentCenterX = leftSideLineX;
+        if (advanceWidth > 0) {
+            contentCenterX = leftSideLineX + ((advanceWidth * fScale) / 2);
+        } else if (glyph.getBoundingBox) {
+            try {
+                const bbox = glyph.getBoundingBox();
+                const glyphWidth = (bbox.x2 - bbox.x1) * fScale;
+                contentCenterX = leftSideLineX + (bbox.x1 * fScale) + (glyphWidth / 2);
+            } catch(e) {}
+        }
+        
+        panX = (baseW / 2) - contentCenterX;
+        panY = 0;
 
         const svgNS = "http://www.w3.org/2000/svg";
         const svgElement = document.createElementNS(svgNS, "svg");
@@ -757,30 +770,17 @@
         bgRect.className.baseVal = "bg-rect";
         svgElement.appendChild(bgRect);
 
-        function createHMetricRow(y, text, rawValue, lineColor, tagColor) {
-            const g = document.createElementNS(svgNS, "g");
+        // 🌟 បង្កើត Group សម្រាប់ផ្ទុក Elements ដែលត្រូវរំកិលតាម Pan/Zoom (ដូចជា Lines និង Glyphs)
+        const transformedGroup = document.createElementNS(svgNS, "g");
+        transformedGroup.id = "transformed-content-group";
+
+        function createHMetricRow(y, lineColor) {
             const line = document.createElementNS(svgNS, "line");
             line.setAttribute("x1", "-10000"); line.setAttribute("y1", y);
             line.setAttribute("x2", "10000"); line.setAttribute("y2", y);
             line.setAttribute("stroke", lineColor); line.setAttribute("stroke-width", "0.5");
             line.setAttribute("stroke-dasharray", "4,4");
-            g.appendChild(line);
-
-            if (showMetricsLabels) {
-                const rect = document.createElementNS(svgNS, "rect");
-                rect.setAttribute("x", "15"); rect.setAttribute("y", y - 9);
-                rect.setAttribute("width", "75"); rect.setAttribute("height", "18");
-                rect.setAttribute("rx", "4"); rect.setAttribute("fill", tagColor);
-                rect.setAttribute("opacity", "0.75");
-                g.appendChild(rect);
-
-                const svgText = document.createElementNS(svgNS, "text");
-                svgText.setAttribute("x", "20"); svgText.setAttribute("y", y + 4);
-                svgText.className.baseVal = "metric-lbl-txt";
-                svgText.textContent = `${text}:${rawValue}`;
-                g.appendChild(svgText);
-            }
-            return g;
+            return line;
         }
 
         function createVMetricLine(x, text, lineColor) {
@@ -803,15 +803,15 @@
         }
 
         if (showVectorLines) {
-            svgElement.appendChild(createHMetricRow(ascenderY, "ASC", ascender, "rgba(244, 63, 94, 0.4)", "#f43f5e"));  
-            svgElement.appendChild(createHMetricRow(capHeightY, "CAP", Math.round(capHeight), "rgba(245, 158, 11, 0.4)", "#f59e0b")); 
-            svgElement.appendChild(createHMetricRow(baselineY, "BASE", 0, "rgba(16, 185, 129, 0.4)", "#10b981"));  
-            svgElement.appendChild(createHMetricRow(descenderY, "DESC", descender, "rgba(59, 130, 246, 0.4)", "#3b82f6")); 
+            transformedGroup.appendChild(createHMetricRow(ascenderY, "rgba(244, 63, 94, 0.4)"));  
+            transformedGroup.appendChild(createHMetricRow(capHeightY, "rgba(245, 158, 11, 0.4)")); 
+            transformedGroup.appendChild(createHMetricRow(baselineY, "rgba(16, 185, 129, 0.4)"));  
+            transformedGroup.appendChild(createHMetricRow(descenderY, "rgba(59, 130, 246, 0.4)")); 
         }
 
         if (showSideLines) {
-            svgElement.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.6)"));
-            svgElement.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.7)"));
+            transformedGroup.appendChild(createVMetricLine(leftSideLineX, "LSB", "rgba(168, 85, 247, 0.6)"));
+            transformedGroup.appendChild(createVMetricLine(rightSideLineX, "RSB/WD", "rgba(168, 85, 247, 0.7)"));
         }
 
         const textGroup = document.createElementNS(svgNS, "g");
@@ -821,11 +821,11 @@
         const glyphChar = glyph.unicode ? String.fromCharCode(glyph.unicode) : '';
         const glyphScaleFactor = fScale * uM;
 
-        // កែសម្រួល៖ ប្តូរការបង្ហាញពី "center" មកចាប់ផ្តើមត្រង់គែមឆ្វេង (LSB) ដើម្បីរក្សាការផ្គុំជើងអក្សរខ្មែរឱ្យបានត្រឹមត្រូវបំផុត
         if (userTypedText && userTypedText !== glyphChar) {
             const nativeTextNode = document.createElementNS(svgNS, "text");
-            nativeTextNode.setAttribute("x", leftSideLineX); // ចាប់ផ្តើមសរសេរពី LSB ទៅខាងស្តាំ
+            nativeTextNode.setAttribute("x", leftSideLineX); 
             nativeTextNode.setAttribute("y", baselineY);
+            nativeTextNode.setAttribute("text-anchor", "start");
             nativeTextNode.setAttribute("class", "khmer-perfect-text");
             nativeTextNode.setAttribute("font-size", glyphScaleFactor);
             nativeTextNode.setAttribute("fill", chosenGlyphColor);
@@ -849,7 +849,40 @@
                 textGroup.appendChild(textElement);
             }
         }
-        svgElement.appendChild(textGroup);
+        transformedGroup.appendChild(textGroup);
+        svgElement.appendChild(transformedGroup);
+
+        // 🌟 នេះជាកន្លែងដោះស្រាយ៖ ដាក់ផ្លាកសញ្ញាដេក (Labels) នៅ Group ខាងក្រៅដាច់ដោយឡែក 
+        // ដើម្បីឱ្យវាស្ថិតនៅថេរកៀនខាងឆ្វេងបង្អស់ជានិច្ច ផុតពីតួអក្សរ ទោះជា Pan ទៅណាក៏ដោយ
+        if (showVectorLines && showMetricsLabels) {
+            const staticLabelsGroup = document.createElementNS(svgNS, "g");
+            staticLabelsGroup.id = "static-labels-overlay";
+
+            function drawStaticTag(y, text, rawValue, tagColor) {
+                const g = document.createElementNS(svgNS, "g");
+                const rect = document.createElementNS(svgNS, "rect");
+                rect.setAttribute("x", "15"); rect.setAttribute("y", y - 9);
+                rect.setAttribute("width", "75"); rect.setAttribute("height", "18");
+                rect.setAttribute("rx", "4"); rect.setAttribute("fill", tagColor);
+                rect.setAttribute("opacity", "0.85");
+                g.appendChild(rect);
+
+                const svgText = document.createElementNS(svgNS, "text");
+                svgText.setAttribute("x", "20"); svgText.setAttribute("y", y + 4);
+                svgText.className.baseVal = "metric-lbl-txt";
+                svgText.textContent = `${text}:${rawValue}`;
+                g.appendChild(svgText);
+                return g;
+            }
+
+            // គណនាទីតាំង Y តាមរូបមន្តខាងលើ ប៉ុន្តែវានឹងមានលក្ខណៈស្របតាម PanY និង Zoom នៅពេល updateViewBox()
+            staticLabelsGroup.appendChild(drawStaticTag(ascenderY, "ASC", ascender, "#f43f5e"));
+            staticLabelsGroup.appendChild(drawStaticTag(capHeightY, "CAP", Math.round(capHeight), "#f59e0b"));
+            staticLabelsGroup.appendChild(drawStaticTag(baselineY, "BASE", 0, "#10b981"));
+            staticLabelsGroup.appendChild(drawStaticTag(descenderY, "DESC", descender, "#3b82f6"));
+            
+            svgElement.appendChild(staticLabelsGroup);
+        }
 
         modalSvgHolder.appendChild(svgElement);
         setupZoomAndPanControl();
@@ -857,12 +890,28 @@
 
     function setupZoomAndPanControl() {
         const svgElement = document.getElementById('target-glyph-svg');
+        const transformedGroup = document.getElementById('transformed-content-group');
+        const staticLabelsOverlay = document.getElementById('static-labels-overlay');
         
         function updateViewBox() {
             if (!svgElement) return;
+            
+            // គណនា ViewBox ទូទៅ
             const newW = baseW / baseZoomLevel; const newH = baseH / baseZoomLevel;
             const newX = ((baseW - newW) / 2) - panX; const newY = ((baseH - newH) / 2) - panY;
-            svgElement.setAttribute("viewBox", `${newX} ${newY} ${newW} ${newH}`);
+            
+            // កំណត់ឱ្យរំកិល និង Zoom ទៅលើតែវត្ថុ និងខ្សែបន្ទាត់វាស់វែង
+            if (transformedGroup) {
+                transformedGroup.setAttribute("transform", `translate(${panX}, ${panY}) scale(${baseZoomLevel}) translate(${((baseW/baseZoomLevel)-baseW)/2}, ${((baseH/baseZoomLevel)-baseH)/2})`);
+            }
+            
+            // សម្រាប់ផ្លាកសញ្ញា (Labels) ខាងឆ្វេង គឺឱ្យវា Zoom ធំតូចតាមកម្រិតធៀបនឹងខ្សែដេក ប៉ុន្តែមិនឱ្យវា Pan រំកិលតាមផ្ដេក (X) ឡើយ
+            if (staticLabelsOverlay) {
+                staticLabelsOverlay.setAttribute("transform", `translate(0, ${panY}) scale(1, ${baseZoomLevel}) translate(0, ${((baseH/baseZoomLevel)-baseH)/2})`);
+            }
+            
+            // រក្សាទំហំ ViewBox មេឱ្យនៅថេរដដែល ដើម្បីកុំឱ្យបាត់បង់តុល្យភាពទ្រង់ទ្រាយរួម
+            svgElement.setAttribute("viewBox", `0 0 ${baseW} ${baseH}`);
         }
 
         popupZoomSlider.oninput = function(e) {
@@ -886,8 +935,9 @@
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             const deltaX = clientX - startX; const deltaY = clientY - startY;
             startX = clientX; startY = clientY;
-            panX += (deltaX / baseZoomLevel) * (baseW / holder.clientWidth);
-            panY += (deltaY / baseZoomLevel) * (baseH / holder.clientHeight);
+            
+            panX += deltaX * (baseW / holder.clientWidth);
+            panY += deltaY * (baseH / holder.clientHeight);
             updateViewBox();
         }
 
@@ -901,9 +951,14 @@
         holder.addEventListener('touchend', endDrag);
 
         resetZoomBtn.onclick = function() {
-            baseZoomLevel = 1.0; panX = 0; panY = 0;
+            baseZoomLevel = 1.0; 
+            if (currentFont) {
+                updateModalContent(false);
+            } else {
+                panX = 0; panY = 0;
+                updateViewBox();
+            }
             popupZoomSlider.value = 1.0; popupZoomValue.innerText = "100%";
-            updateViewBox();
         };
         updateViewBox();
     }
@@ -917,19 +972,15 @@
         let exportW = baseW;
         let exportH = baseH;
 
-        // កែសម្រួលពិសេស៖ ស្វែងរកទំហំផ្ទៃពិតប្រាកដ (BBox) របស់ពាក្យទាំងអស់ រួចពង្រីកទទឹងប្រអប់ថតស្វ័យប្រវត្តិកុំឱ្យដាច់ពាក្យកណ្តាល
         if (textGroup) {
             try {
                 const bbox = textGroup.getBBox();
-                const paddingX = 220; // បន្ថែមគម្លាតសងខាងឱ្យសល់ផ្ទៃស្អាត
+                const paddingX = 220; 
                 
-                // បើប្រវែងពាក្យសរសេរវែងហួសផ្ទាំង Canvas ធម្មតា យើងទាញពង្រីកវាភ្លាម
                 if ((bbox.width + paddingX) > baseW) {
                     exportW = Math.ceil(bbox.width + paddingX);
-                    // កំណត់ ViewBox ឱ្យបង្ហាញទម្រង់ពាក្យ និង Guideline ទាំងអស់ឱ្យចំកណ្តាលពេញលេញ
                     clonedSvg.setAttribute("viewBox", `0 0 ${exportW} ${baseH}`);
                     
-                    // កែតម្រូវផ្ទៃខាងក្រោយពណ៌ខ្មៅឱ្យធំទៅតាមទំហំថ្មី
                     const clonedBg = clonedSvg.querySelector('.bg-rect');
                     if (clonedBg) clonedBg.setAttribute("width", exportW);
                 } else {
@@ -950,7 +1001,6 @@
         const image = new Image();
         image.onload = function() {
             const canvas = document.createElement('canvas');
-            // កំណត់គុណភាពច្បាស់ x2 (High-Resolution 8K standard) នៃទំហំដែលបានវាស់វែងរួច
             canvas.width = exportW * 2; canvas.height = exportH * 2;
             const context = canvas.getContext('2d');
             context.drawImage(image, 0, 0, exportW * 2, exportH * 2);
