@@ -14,7 +14,7 @@
     <meta name="apple-mobile-web-app-title" content="Khmer Glyph">
     <meta name="theme-color" content="#0b0f19">
 
-    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH0KICBdLAogICJzdGFydF91cmwiOiAiLiIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBiMGYxOSIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYjBmMTkiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJzaG9ydF9uYW1lIjogIktobWVyIEdseXBoIiwKICAibmFtZSI6ICJLaG1lciBHbHlwaCBJbnNwZWN0b3IiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2kucG9zdGltZy5jYy9NSHoxR25jdy9JTUctMzE3OC5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIsCiAgICAgICJwdXJwb3NlIjogImFueSBtYXJrYWJsZSIKICAgIH5KICBdLAogICJzdGFydF91cmwiOiAiLiIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBiMGYxOSIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYjBmMTkiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIKfQ==">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -459,10 +459,10 @@
             </div>
             
             <div class="action-buttons-group">
-                <button class="btn-action-icon" id="full-card-screenshot-btn" title="📸 ថតរូបផ្ទាំងប្រអប់ទាំងមូល">
+                <button class="btn-action-icon" id="full-card-screenshot-btn" title="📸 Save Full Card to Photos">
                     <svg viewBox="0 0 24 24"><path d="M4 5h3l2-3h6l2 3h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM18 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
                 </button>
-                <button class="btn-action-icon" id="screenshot-btn" title="🖼️ ថតយកតែរូបតួអក្សរ">
+                <button class="btn-action-icon" id="screenshot-btn" title="🖼️ Save Glyph to Photos">
                     <svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
                 </button>
             </div>
@@ -616,8 +616,6 @@
                     document.head.appendChild(fontDynamicStyle);
                 }
 
-                // 🌟 កែសម្រួល៖ បញ្ចូល Font ទៅក្នុងប្រព័ន្ធ Document Object Model ជាសកល 
-                // ដើម្បីឱ្យបណ្ណាល័យ html2canvas អាចអានចេញ Font ខ្មែរពេលថតរូបបានពេញលេញ មិនបាត់អក្សរ
                 try {
                     const fontFace = new FontFace(fontUniqueId, `url(data:font/opentype;base64,${base64FontData})`);
                     fontFace.load().then(function(loadedFace) {
@@ -710,7 +708,6 @@
         }
     }
 
-    /* 🌟 កែសម្រួល៖ បន្ថែមមុខងារចាក់សោ Scroll អេក្រង់មេ នៅពេលបើកផ្ទាំង Modal ការពារការរំខានលើទូរស័ព្ទ */
     function openGlyphModal(index, updateTextField = true) {
         if (!currentFont) return;
         selectedGlyphIndex = index;
@@ -723,7 +720,6 @@
         document.body.style.height = '100vh';
     }
 
-    /* 🌟 កែសម្រួល៖ ដោះសោ Scroll ពេលបិទ Modal ឱ្យមកសភាពធម្មតាវិញ */
     function closeModal() { 
         glyphModal.classList.remove('active'); 
         document.body.style.overflow = '';
@@ -987,6 +983,36 @@
         updateViewBox();
     }
 
+    // 🌟 មុខងាររក្សាទុករូបភាពអក្សរ (Glyph Vector) ទៅ Photos យ៉ាងរលូន
+    async function saveBlobToPhotos(blob, filename) {
+        const file = new File([blob], filename, { type: 'image/png' });
+        
+        // ប្រើប្រាស់ Web Share API (គាំទ្រលើ iPhone/Android ស្ទើរទាំងអស់)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: 'Khmer Glyph Inspector',
+                    text: 'រក្សាទុករូបភាពអក្សរ'
+                });
+                return;
+            } catch (err) {
+                if (err.name !== 'AbortError') console.log('Share error:', err);
+                return;
+            }
+        }
+        
+        // ដំណោះស្រាយបម្រុងបើកទាញយកតាមតំណភ្ជាប់ធម្មតា
+        const blobUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    }
+
     screenshotBtn.addEventListener('click', function() {
         const svgElement = document.getElementById('target-glyph-svg');
         const textGroup = document.getElementById('target-text-group');
@@ -1029,29 +1055,35 @@
             const context = canvas.getContext('2d');
             context.drawImage(image, 0, 0, exportW * 2, exportH * 2);
             
-            const pngURL = canvas.toDataURL('image/png');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = pngURL; downloadLink.download = `Glyph_Vector_${selectedGlyphIndex}.png`;
-            document.body.appendChild(downloadLink); downloadLink.click(); document.body.removeChild(downloadLink);
+            canvas.toBlob((blob) => {
+                saveBlobToPhotos(blob, `Glyph_Vector_${selectedGlyphIndex}.png`);
+            }, 'image/png');
+
             URL.revokeObjectURL(blobURL);
         };
         image.src = blobURL;
     });
 
+    // 🌟 មុខងាររក្សាទុកផ្ទាំងប្រអប់ទាំងមូល (Full Card) ទៅ Photos យ៉ាងរលូន
     fullCardScreenshotBtn.addEventListener('click', function() {
         const captureArea = document.getElementById('capture-area');
         if (!captureArea) return;
 
-        // 🌟 កែសម្រួល៖ html2canvas ឥឡូវដំណើរការបានឥតខ្ចោះ មិនបាត់តួអក្សរខ្មែរឡើយ 
-        // ព្រោះ Font ត្រូវបាន register ចូលទៅក្នុង document.fonts រួចជាស្រេច
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
         html2canvas(captureArea, {
-            backgroundColor: '#131926', scale: 2, logging: false, useCORS: true
+            backgroundColor: '#131926', 
+            scale: isIOS ? 1 : 2, 
+            logging: false, 
+            useCORS: true
         }).then(canvas => {
-            const pngURL = canvas.toDataURL('image/png');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = pngURL; downloadLink.download = `Glyph_Full_Box_${selectedGlyphIndex}.png`;
-            document.body.appendChild(downloadLink); downloadLink.click(); document.body.removeChild(downloadLink);
-        }).catch(err => console.error(err));
+            canvas.toBlob((blob) => {
+                saveBlobToPhotos(blob, `Glyph_Full_Box_${selectedGlyphIndex}.png`);
+            }, 'image/png');
+        }).catch(err => {
+            console.error("Screenshot Error:", err);
+            alert("មានបញ្ាក្នុងការថតរូប សូមព្យាយាមម្ដងទៀត!");
+        });
     });
 
     prevBtn.addEventListener('click', (e) => { e.stopPropagation(); if (selectedGlyphIndex > 0) { selectedGlyphIndex--; openGlyphModal(selectedGlyphIndex, true); } });
